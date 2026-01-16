@@ -1,6 +1,6 @@
-# UAP Map
+# UFO/UAP Map
 
-Unidentified Aerial Phenomena
+Unidentified Flying Object / Unidentified Aerial Phenomena Map.
 
 A Pen created on CodePen.
 
