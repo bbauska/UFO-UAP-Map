@@ -1,212 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>UFO Network Greatly Expanded + Tooltips & Legend</title>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Hide browser scroll bars */
-        }
-        svg {
-            width: 100vw;
-            height: 100vh;
-            background: #fafafa; /* Light gray background - should be visible */
-            cursor: move; /* Indicate panning is possible */
-        }
+  <meta charset="UTF-8" />
+  <title>UFO Network Greatly Expanded + Tooltips & Legend</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* Hide browser scroll bars */
+    }
+    svg {
+      width: 100vw;
+      height: 100vh;
+      background: #fafafa; /* Light gray background - should be visible */
+      cursor: move; /* Indicate panning is possible */
+    }
 
-        /* Links (edges) */
-        line.link {
-            stroke: #999; /* Gray links - should be visible */
-            stroke-opacity: 0.6;
-            stroke-width: 1.5px;
-        }
+    /* Links (edges) */
+    line.link {
+      stroke: #999; /* Gray links - should be visible */
+      stroke-opacity: 0.6;
+      stroke-width: 1.5px;
+    }
 
-        /* Link labels */
-        text.link-label {
-            font-family: sans-serif;
-            font-size: 10px;
-            fill: #555; /* Dark gray labels - should be visible */
-            pointer-events: none; /* Don't block mouse on link text */
-        }
+    /* Link labels */
+    text.link-label {
+      font-family: sans-serif;
+      font-size: 10px;
+      fill: #555; /* Dark gray labels - should be visible */
+      pointer-events: none; /* Don't block mouse on link text */
+    }
 
-        /* Node circles */
-        circle.node {
-            stroke: #fff;
-            stroke-width: 1.5px;
-            cursor: grab;
-        }
+    /* Node circles */
+    circle.node {
+      stroke: #fff;
+      stroke-width: 1.5px;
+      cursor: grab;
+    }
 
-        /* Node labels */
-        text.node-label {
-            font-family: sans-serif;
-            font-size: 10px;
-            pointer-events: none;
-        }
+    /* Node labels */
+    text.node-label {
+      font-family: sans-serif;
+      font-size: 10px;
+      pointer-events: none;
+    }
 
-        /* Legend styling */
-        .legend {
-            font-family: sans-serif;
-            font-size: 12px;
-        }
-        .legend rect {
-            stroke: #333;
-            stroke-width: 1px;
-        }
-    </style>
+    /* Legend styling */
+    .legend {
+      font-family: sans-serif;
+      font-size: 12px;
+    }
+    .legend rect {
+      stroke: #333;
+      stroke-width: 1px;
+    }
+  </style>
 </head>
 <body>
 
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script>
 /*
-    Ultra-expanded UFO network with ~200+ nodes plus more expansions.
-    - Fixed missing nodes (Marco Rubio, Tim Burchett, etc.) 
-    - Expanded with additional links for broader context.
+  Ultra-expanded UFO network with ~200+ nodes plus more expansions.
+  - Fixed missing nodes (Marco Rubio, Tim Burchett, etc.) 
+  - Expanded with additional links for broader context.
 */
 
 var graph = {
-    nodes: [
-        // --------------------------------------------------------------------
-        // ORIGINAL NODES (about 159 in total):
-        // --------------------------------------------------------------------
-        // Roswell-related (10)
-        { id: "Jesse Marcel", group: "Roswell", description: "Military intelligence officer involved in Roswell debris recovery." },
-        { id: "Glenn Dennis", group: "Roswell", description: "Mortician who claimed to have witnessed strange Roswell activity at the base." },
-        { id: "Walter Haut", group: "Roswell", description: "Roswell base public information officer who issued the initial press release about a 'flying disc'." },
-        { id: "William Blanchard", group: "Roswell", description: "Commanding General at Roswell responsible for the initial and retracted press releases." },
-        { id: "Sheridan Cavitt", group: "Roswell", description: "Counterintelligence officer who accompanied Marcel to the Roswell debris field." },
-        { id: "Mac Brazel", group: "Roswell", description: "Rancher who initially discovered the debris field in Roswell." },
-        { id: "General Ramey", group: "Roswell", description: "General who oversaw the Roswell investigation and presented 'weather balloon' debris." },
-        { id: "Maj. Kirton", group: "Roswell", description: "Officer involved in the Roswell debris handling at Fort Worth." },
-        { id: "Frank Joyce", group: "Roswell", description: "Radio newsman who broadcast early Roswell reports." },
-        { id: "Robert Shirkey", group: "Roswell", description: "Weather officer at Roswell involved in initial reports." },
+  nodes: [
+    // --------------------------------------------------------------------
+    // ORIGINAL NODES (about 159 in total):
+    // --------------------------------------------------------------------
+    // Roswell-related (10)
+    { id: "Jesse Marcel", group: "Roswell", description: "Military intelligence officer involved in Roswell debris recovery." },
+    { id: "Glenn Dennis", group: "Roswell", description: "Mortician who claimed to have witnessed strange Roswell activity at the base." },
+    { id: "Walter Haut", group: "Roswell", description: "Roswell base public information officer who issued the initial press release about a 'flying disc'." },
+    { id: "William Blanchard", group: "Roswell", description: "Commanding General at Roswell responsible for the initial and retracted press releases." },
+    { id: "Sheridan Cavitt", group: "Roswell", description: "Counterintelligence officer who accompanied Marcel to the Roswell debris field." },
+    { id: "Mac Brazel", group: "Roswell", description: "Rancher who initially discovered the debris field in Roswell." },
+    { id: "General Ramey", group: "Roswell", description: "General who oversaw the Roswell investigation and presented 'weather balloon' debris." },
+    { id: "Maj. Kirton", group: "Roswell", description: "Officer involved in the Roswell debris handling at Fort Worth." },
+    { id: "Frank Joyce", group: "Roswell", description: "Radio newsman who broadcast early Roswell reports." },
+    { id: "Robert Shirkey", group: "Roswell", description: "Weather officer at Roswell involved in initial reports." },
 
-        // MJ-12 figures (10)
-        { id: "Majestic 12", group: "MJ-12", description: "Alleged top-secret group of scientists, military officials, and government leaders." },
-        { id: "Vannevar Bush", group: "MJ-12", description: "Scientist; key figure in the alleged formation of MJ-12." },
-        { id: "Roscoe Hillenkoetter", group: "MJ-12", description: "Former CIA director, allegedly involved with MJ-12." },
-        { id: "James Forrestal", group: "MJ-12", description: "Former Secretary of Defense; associated with MJ-12 rumors and alleged suicide." },
-        { id: "Nathan Twining", group: "MJ-12", description: "Air Force General; allegedly involved in MJ-12 and early UFO studies." },
-        { id: "Hoyt Vandenberg", group: "MJ-12", description: "Air Force Chief of Staff; supposedly part of MJ-12." },
-        { id: "Sidney Souers", group: "MJ-12", description: "First Director of Central Intelligence; alleged MJ-12 member." },
-        { id: "Robert Cutler", group: "MJ-12", description: "National Security Advisor; linked to MJ-12 documents." },
-        { id: "Donald Menzel", group: "MJ-12", description: "UFO skeptic astronomer; paradoxically listed in alleged MJ-12 documents." },
-        { id: "Gordon Gray", group: "MJ-12", description: "Government official; allegedly connected to MJ-12." },
+    // MJ-12 figures (10)
+    { id: "Majestic 12", group: "MJ-12", description: "Top-secret group of scientists, military officials, and government leaders." },
+    { id: "Vannevar Bush", group: "MJ-12", description: "Scientist; key figure in the formation of MJ-12." },
+    { id: "Roscoe Hillenkoetter", group: "MJ-12", description: "Former CIA director, involved with MJ-12." },
+    { id: "James Forrestal", group: "MJ-12", description: "Former Secretary of Defense; associated with MJ-12; murdered by CIA/Navy (alleged suicide)." },
+    { id: "Nathan Twining", group: "MJ-12", description: "Air Force General; involved in MJ-12 and early UFO studies." },
+    { id: "Hoyt Vandenberg", group: "MJ-12", description: "Air Force Chief of Staff; part of MJ-12." },
+    { id: "Sidney Souers", group: "MJ-12", description: "First Director of Central Intelligence; MJ-12 member." },
+    { id: "Robert Cutler", group: "MJ-12", description: "National Security Advisor; linked to MJ-12 documents." },
+    { id: "Donald Menzel", group: "MJ-12", description: "UFO skeptic astronomer; CIA operative and paradoxically listed in MJ-12 documents." },
+    { id: "Gordon Gray", group: "MJ-12", description: "Government official; connected to MJ-12." },
 
-        // Project Blue Book (11)
-        { id: "Project Blue Book", group: "Project Blue Book", description: "US Air Force program investigating UFO sightings (1952-1969)." },
-        { id: "Edward J. Ruppelt", group: "Project Blue Book", description: "First director of Project Blue Book, upgraded the study of UFOs." },
-        { id: "J. Allen Hynek", group: "Project Blue Book", description: "Astronomer, scientific consultant to Blue Book, later became a UFO proponent." },
-        { id: "Hector Quintanilla", group: "Project Blue Book", description: "Last director of Project Blue Book, known for skeptical stance." },
-        { id: "Michael Swords", group: "Project Blue Book", description: "UFO researcher, critical of Project Blue Book's methodology and conclusions." },
-        { id: "Robert J. Friend", group: "Project Blue Book", description: "Director of Project Blue Book between Ruppelt and Quintanilla." },
-        { id: "Albert M. Chop", group: "Project Blue Book", description: "Public information officer for Project Blue Book, known for his openness." },
-        { id: "Calvin Parker", group: "Project Blue Book", description: "One of the Pascagoula abductees, case studied under Project Blue Book." },
-        { id: "Charles Hickson", group: "Project Blue Book", description: "One of the Pascagoula abductees, case investigated by Project Blue Book." },
-        { id: "George Adamski", group: "Project Blue Book", description: "Early contactee, his claims were reviewed (often dismissed) by Blue Book." },
-        { id: "Donald Keyhoe", group: "Project Blue Book", description: "Author who popularized UFOs, critical of Air Force secrecy, NICAP founder." },
+    // Project Blue Book (11)
+    { id: "Project Blue Book", group: "Project Blue Book", description: "US Air Force program investigating UFO sightings (1952-1969)." },
+    { id: "Edward J. Ruppelt", group: "Project Blue Book", description: "First director of Project Blue Book, upgraded the study of UFOs." },
+    { id: "J. Allen Hynek", group: "Project Blue Book", description: "Astronomer, scientific consultant to Blue Book, later became a UFO proponent." },
+    { id: "Hector Quintanilla", group: "Project Blue Book", description: "Last director of Project Blue Book, known for skeptical stance." },
+    { id: "Michael Swords", group: "Project Blue Book", description: "UFO researcher, critical of Project Blue Book's methodology and conclusions." },
+    { id: "Robert J. Friend", group: "Project Blue Book", description: "Director of Project Blue Book between Ruppelt and Quintanilla." },
+    { id: "Albert M. Chop", group: "Project Blue Book", description: "Public information officer for Project Blue Book, known for his openness." },
+    { id: "Calvin Parker", group: "Project Blue Book", description: "One of the Pascagoula abductees, case studied under Project Blue Book." },
+    { id: "Charles Hickson", group: "Project Blue Book", description: "One of the Pascagoula abductees, case investigated by Project Blue Book." },
+    { id: "George Adamski", group: "Project Blue Book", description: "Early contactee, his claims were reviewed (often dismissed) by Blue Book." },
+    { id: "Donald Keyhoe", group: "Project Blue Book", description: "Author who popularized UFOs, critical of Air Force secrecy, NICAP founder." },
 
-        // Contactees/Researchers (11)
-        { id: "Travis Walton", group: "Contactees", description: "Forest worker who claimed abduction, subject of book & film 'Fire in the Sky'." },
-        { id: "Betty Hill", group: "Contactees", description: "One half of the Hill abduction case." },
-        { id: "Barney Hill", group: "Contactees", description: "Other half of the Hill abduction case." },
-        { id: "Ingo Swann", group: "Contactees", description: "Known for remote viewing, claimed UFO connections." },
-        { id: "Philip Klass", group: "Contactees", description: "Prominent UFO skeptic, known for debunking." },
-        { id: "Linda Moulton Howe", group: "Contactees", description: "Journalist & ufologist, known for cattle mutilation research." },
-        { id: "Jacques Vallée", group: "Contactees", description: "Ufologist & computer scientist, interdimensional hypothesis." },
-        { id: "Whitley Strieber", group: "Contactees", description: "Author of 'Communion' on alien encounters." },
-        { id: "John E. Mack", group: "Contactees", description: "Harvard psychiatrist who studied abduction experiences." },
-        { id: "Nick Pope", group: "Contactees", description: "Ran British MoD UFO desk, became media commentator." },
-        { id: "Stan Romanek", group: "Contactees", description: "Controversial figure with alleged abduction/ET evidence." },
+    // Contactees/Researchers (11)
+    { id: "Travis Walton", group: "Contactees", description: "Forest worker who claimed abduction, subject of book & film 'Fire in the Sky'." },
+    { id: "Betty Hill", group: "Contactees", description: "One half of the Hill abduction case." },
+    { id: "Barney Hill", group: "Contactees", description: "Other half of the Hill abduction case." },
+    { id: "Ingo Swann", group: "Contactees", description: "Known for remote viewing, claimed UFO connections." },
+    { id: "Philip Klass", group: "Contactees", description: "Prominent UFO skeptic, known for debunking." },
+    { id: "Linda Moulton Howe", group: "Contactees", description: "Journalist & ufologist, known for cattle mutilation research." },
+    { id: "Jacques Vallée", group: "Contactees", description: "Ufologist & computer scientist, interdimensional hypothesis." },
+    { id: "Whitley Strieber", group: "Contactees", description: "Author of 'Communion' on alien encounters." },
+    { id: "John E. Mack", group: "Contactees", description: "Harvard psychiatrist who studied abduction experiences." },
+    { id: "Nick Pope", group: "Contactees", description: "Ran British MoD UFO desk, became media commentator." },
+    { id: "Stan Romanek", group: "Contactees", description: "Controversial figure with alleged abduction/ET evidence." },
 
-        // U.S. or other Generals/Officers (10)
-        { id: "Albert Stubblebine", group: "Generals", description: "General advocating psychic warfare, believed in paranormal phenomena." },
-        { id: "General MacArthur", group: "Generals", description: "Rumored to have interest in UFO matters post WWII." },
-        { id: "John Alexander", group: "Generals", description: "Expert on non-lethal weapons, paranormal research in the military." },
-        { id: "General John Samford", group: "Generals", description: "Air Force Director of Intelligence in the 1950s." },
-        { id: "General Benjamin Chidlaw", group: "Generals", description: "Involved in early Air Force UFO investigations." },
-        { id: "Colonel Charles Halt", group: "Generals", description: "USAF base commander at Rendlesham Forest incident." },
-        { id: "General William Garland", group: "Generals", description: "Linked to early UFO secrecy." },
-        { id: "General Mark Bradley", group: "Generals", description: "Army General rumored to have UFO interest." },
-        { id: "General George Marshall", group: "Generals", description: "Key WWII General, some speculation on UFO knowledge." },
-        { id: "General Walter Bedell Smith", group: "Generals", description: "CIA's first director, linked to MJ-12 rumors." },
+    // U.S. or other Generals/Officers (10)
+    { id: "Albert Stubblebine", group: "Generals", description: "General advocating psychic warfare, believed in paranormal phenomena." },
+    { id: "General MacArthur", group: "Generals", description: "Rumored to have interest in UFO matters post WWII." },
+    { id: "John Alexander", group: "Generals", description: "Expert on non-lethal weapons, paranormal research in the military." },
+    { id: "General John Samford", group: "Generals", description: "Air Force Director of Intelligence in the 1950s." },
+    { id: "General Benjamin Chidlaw", group: "Generals", description: "Involved in early Air Force UFO investigations." },
+    { id: "Colonel Charles Halt", group: "Generals", description: "USAF base commander at Rendlesham Forest incident." },
+    { id: "General William Garland", group: "Generals", description: "Linked to early UFO secrecy." },
+    { id: "General Mark Bradley", group: "Generals", description: "Army General rumored to have UFO interest." },
+    { id: "General George Marshall", group: "Generals", description: "Key WWII General, some speculation on UFO knowledge." },
+    { id: "General Walter Bedell Smith", group: "Generals", description: "CIA's first director, linked to MJ-12 rumors." },
 
-        // Brazilian officers (10)
-        { id: "Brigadier Jose Carlos Pereira", group: "Brazil", description: "Involved in 'Operation Prato' official UFO investigations." },
-        { id: "General Alfredo Moacyr Uchoa", group: "Brazil", description: "General in UFO discussions & military openness." },
-        { id: "Brigadier Joao Camarão Telles Ribeiro", group: "Brazil", description: "Air force UFO investigations." },
-        { id: "Colonel Uyrangê Hollanda", group: "Brazil", description: "Headed 'Operation Prato,' died mysteriously." },
-        { id: "General Decio Escobar", group: "Brazil", description: "Public statements on UFOs." },
-        { id: "General Silvio Frota", group: "Brazil", description: "Involved in military UFO discussions." },
-        { id: "Brigadier Montenegro", group: "Brazil", description: "Involved in UFO report declassification." },
-        { id: "Brigadier Protásio Lopes", group: "Brazil", description: "Air force UFO research." },
-        { id: "General Newton Cruz", group: "Brazil", description: "Involved in governmental UFO discussions." },
-        { id: "General Etchegoyen", group: "Brazil", description: "High-level UFO discussion involvement." },
+    // Brazilian officers (10)
+    { id: "Brigadier Jose Carlos Pereira", group: "Brazil", description: "Involved in 'Operation Prato' official UFO investigations." },
+    { id: "General Alfredo Moacyr Uchoa", group: "Brazil", description: "General in UFO discussions & military openness." },
+    { id: "Brigadier Joao Camarão Telles Ribeiro", group: "Brazil", description: "Air force UFO investigations." },
+    { id: "Colonel Uyrangê Hollanda", group: "Brazil", description: "Headed 'Operation Prato,' died mysteriously." },
+    { id: "General Decio Escobar", group: "Brazil", description: "Public statements on UFOs." },
+    { id: "General Silvio Frota", group: "Brazil", description: "Involved in military UFO discussions." },
+    { id: "Brigadier Montenegro", group: "Brazil", description: "Involved in UFO report declassification." },
+    { id: "Brigadier Protásio Lopes", group: "Brazil", description: "Air force UFO research." },
+    { id: "General Newton Cruz", group: "Brazil", description: "Involved in governmental UFO discussions." },
+    { id: "General Etchegoyen", group: "Brazil", description: "High-level UFO discussion involvement." },
 
-        // Astronauts (10)
-        { id: "Gordon Cooper", group: "Astronauts", description: "Mercury astronaut, reportedly sighted UFOs." },
-        { id: "Edgar Mitchell", group: "Astronauts", description: "Apollo astronaut, believer in ET visitation." },
-        { id: "Buzz Aldrin", group: "Astronauts", description: "Apollo astronaut, rumored unusual sightings." },
-        { id: "Story Musgrave", group: "Astronauts", description: "NASA astronaut open to ET possibilities." },
-        { id: "Donald Slayton", group: "Astronauts", description: "Mercury & Apollo, UFO sightings claimed." },
-        { id: "Brian O'Leary", group: "Astronauts", description: "Astronaut & scientist advocating UFO research." },
-        { id: "Scott Carpenter", group: "Astronauts", description: "Mercury astronaut, rumored UFO interest." },
-        { id: "John Glenn", group: "Astronauts", description: "Famous astronaut, cautious on UFOs but open minded." },
-        { id: "Neil Armstrong", group: "Astronauts", description: "First man on moon, rumored UFO remarks." },
-        { id: "Eugene Cernan", group: "Astronauts", description: "Last man on moon, believed in extraterrestrial life." },
+    // Astronauts (10)
+    { id: "Gordon Cooper", group: "Astronauts", description: "Mercury astronaut, reportedly sighted UFOs." },
+    { id: "Edgar Mitchell", group: "Astronauts", description: "Apollo astronaut, believer in ET visitation." },
+    { id: "Buzz Aldrin", group: "Astronauts", description: "Apollo astronaut, rumored unusual sightings." },
+    { id: "Story Musgrave", group: "Astronauts", description: "NASA astronaut open to ET possibilities." },
+    { id: "Donald Slayton", group: "Astronauts", description: "Mercury & Apollo, UFO sightings claimed." },
+    { id: "Brian O'Leary", group: "Astronauts", description: "Astronaut & scientist advocating UFO research." },
+    { id: "Scott Carpenter", group: "Astronauts", description: "Mercury astronaut, rumored UFO interest." },
+    { id: "John Glenn", group: "Astronauts", description: "Famous astronaut, cautious on UFOs but open minded." },
+    { id: "Neil Armstrong", group: "Astronauts", description: "First man on moon, rumored UFO remarks." },
+    { id: "Eugene Cernan", group: "Astronauts", description: "Last man on moon, believed in extraterrestrial life." },
 
-        // Politicians (16)
-        { id: "Harry S. Truman", group: "Politicians", description: "US President during Roswell, MJ-12 formation rumor." },
-        { id: "Dwight D. Eisenhower", group: "Politicians", description: "Rumored meeting with ETs (unconfirmed)." },
-        { id: "Richard Nixon", group: "Politicians", description: "Allegedly showed Jackie Gleason UFO bodies." },
-        { id: "Gerald Ford", group: "Politicians", description: "As Congressman, pushed UFO transparency." },
-        { id: "Jimmy Carter", group: "Politicians", description: "President, reported his own UFO sighting." },
-        { id: "Ronald Reagan", group: "Politicians", description: "Shared UFO anecdotes, 'alien threat' speeches." },
-        { id: "Bill Clinton", group: "Politicians", description: "Tried to get UFO info, used Podesta's help." },
-        { id: "John Podesta", group: "Politicians", description: "Advocate for UFO disclosure." },
-        { id: "Barack Obama", group: "Politicians", description: "Made light UFO comments, ambiguous stance." },
-        { id: "Hillary Clinton", group: "Politicians", description: "Politician, publicly interested in UFOs." },
-        { id: "John F. Kennedy", group: "Politicians", description: "Rumored interest in UFOs, MJ-12 before assassination." },
-        { id: "Harry Reid", group: "Politicians", description: "Ex-Senate Leader, funded AATIP." },
-        { id: "Dick Cheney", group: "Politicians", description: "Ex-VP, rumored UFO briefings." },
-        { id: "Barry Goldwater", group: "Politicians", description: "Senator, frustrated by UFO secrecy." },
-        { id: "Paul Hellyer", group: "Politicians", description: "Canadian Defence Minister, outspoken on UFOs." },
-        { id: "Fife Symington", group: "Politicians", description: "AZ Governor, Phoenix Lights witness." },
+    // Politicians (16)
+    { id: "Harry S. Truman", group: "Politicians", description: "US President during Roswell, MJ-12 formation rumor." },
+    { id: "Dwight D. Eisenhower", group: "Politicians", description: "Rumored meeting with ETs (unconfirmed)." },
+    { id: "Richard Nixon", group: "Politicians", description: "Allegedly showed Jackie Gleason UFO bodies." },
+    { id: "Gerald Ford", group: "Politicians", description: "As Congressman, pushed UFO transparency." },
+    { id: "Jimmy Carter", group: "Politicians", description: "President, reported his own UFO sighting." },
+    { id: "Ronald Reagan", group: "Politicians", description: "Shared UFO anecdotes, 'alien threat' speeches." },
+    { id: "Bill Clinton", group: "Politicians", description: "Tried to get UFO info, used Podesta's help." },
+    { id: "John Podesta", group: "Politicians", description: "Advocate for UFO disclosure." },
+    { id: "Barack Obama", group: "Politicians", description: "Made light UFO comments, ambiguous stance." },
+    { id: "Hillary Clinton", group: "Politicians", description: "Politician, publicly interested in UFOs." },
+    { id: "John F. Kennedy", group: "Politicians", description: "Rumored interest in UFOs, MJ-12 before assassination." },
+    { id: "Harry Reid", group: "Politicians", description: "Ex-Senate Leader, funded AATIP." },
+    { id: "Dick Cheney", group: "Politicians", description: "Ex-VP, rumored UFO briefings." },
+    { id: "Barry Goldwater", group: "Politicians", description: "Senator, frustrated by UFO secrecy." },
+    { id: "Paul Hellyer", group: "Politicians", description: "Canadian Defence Minister, outspoken on UFOs." },
+    { id: "Fife Symington", group: "Politicians", description: "AZ Governor, Phoenix Lights witness." },
 
-        // Celebrities (11)
-        { id: "Marilyn Monroe", group: "Celebrities", description: "Actress, rumored to share UFO secrets with JFK." },
-        { id: "Dan Aykroyd", group: "Celebrities", description: "Actor, vocal UFO enthusiast." },
-        { id: "Robbie Williams", group: "Celebrities", description: "Musician, UFO believer & sightings." },
-        { id: "Tom DeLonge", group: "Celebrities", description: "Musician, founded 'To The Stars Academy'." },
-        { id: "Demi Lovato", group: "Celebrities", description: "Musician, claims ET encounters." },
-        { id: "Shirley MacLaine", group: "Celebrities", description: "Actress, strong UFO & New Age interests." },
-        { id: "Sammy Hagar", group: "Celebrities", description: "Musician, claims UFO experiences." },
-        { id: "Elvis Presley", group: "Celebrities", description: "Rumored secret UFO encounter on a base." },
-        { id: "Muhammad Ali", group: "Celebrities", description: "Boxer, reported multiple UFO sightings." },
-        { id: "Fran Drescher", group: "Celebrities", description: "Actress, claims alien encounter." },
-        { id: "Steven Spielberg", group: "Celebrities", description: "Director of 'Close Encounters' & interested in UFOs." },
+    // Celebrities (11)
+    { id: "Marilyn Monroe", group: "Celebrities", description: "Actress, rumored to share UFO secrets with JFK." },
+    { id: "Dan Aykroyd", group: "Celebrities", description: "Actor, vocal UFO enthusiast." },
+    { id: "Robbie Williams", group: "Celebrities", description: "Musician, UFO believer & sightings." },
+    { id: "Tom DeLonge", group: "Celebrities", description: "Musician, founded 'To The Stars Academy'." },
+    { id: "Demi Lovato", group: "Celebrities", description: "Musician, claims ET encounters." },
+    { id: "Shirley MacLaine", group: "Celebrities", description: "Actress, strong UFO & New Age interests." },
+    { id: "Sammy Hagar", group: "Celebrities", description: "Musician, claims UFO experiences." },
+    { id: "Elvis Presley", group: "Celebrities", description: "Rumored secret UFO encounter on a base." },
+    { id: "Muhammad Ali", group: "Celebrities", description: "Boxer, reported multiple UFO sightings." },
+    { id: "Fran Drescher", group: "Celebrities", description: "Actress, claims alien encounter." },
+    { id: "Steven Spielberg", group: "Celebrities", description: "Director of 'Close Encounters' & interested in UFOs." },
 
-        // TTSA / AATIP (6)
-        { id: "Luis Elizondo", group: "TTSA/AATIP", description: "Ex-intel officer leading AATIP, TTSA figure." },
-        { id: "Hal Puthoff", group: "TTSA/AATIP", description: "Scientist, paranormal & advanced propulsion." },
-        { id: "Eric Davis", group: "TTSA/AATIP", description: "Astrophysicist, advanced propulsion consultant." },
-        { id: "Christopher Mellon", group: "TTSA/AATIP", description: "Ex-Dep. Asst. SecDef, TTSA participant." },
-        { id: "Bob Bigelow", group: "TTSA/AATIP", description: "Aerospace entrepreneur, funded NIDS/BAASS." },
-        { id: "Jim Semivan", group: "TTSA/AATIP", description: "Ex-CIA, co-founder of TTSA w/ DeLonge." },
+    // TTSA / AATIP (6)
+    { id: "Luis Elizondo", group: "TTSA/AATIP", description: "Ex-intel officer leading AATIP, TTSA figure." },
+    { id: "Hal Puthoff", group: "TTSA/AATIP", description: "Scientist, paranormal & advanced propulsion." },
+    { id: "Eric Davis", group: "TTSA/AATIP", description: "Astrophysicist, advanced propulsion consultant." },
+    { id: "Christopher Mellon", group: "TTSA/AATIP", description: "Ex-Dep. Asst. SecDef, TTSA participant." },
+    { id: "Bob Bigelow", group: "TTSA/AATIP", description: "Aerospace entrepreneur, funded NIDS/BAASS." },
+    { id: "Jim Semivan", group: "TTSA/AATIP", description: "Ex-CIA, co-founder of TTSA w/ DeLonge." },
 
-        // Ufology Giants (8)
-        { id: "Stanton Friedman", group: "Ufology Giants", description: "Nuclear physicist & ufologist, Roswell & MJ-12." },
-        { id: "Kevin D. Randle", group: "Ufology Giants", description: "Ufologist, detailed Roswell research." },
-        { id: "Timothy Good", group: "Ufology Giants", description: "Ufologist, published alleged secret docs." },
-        { id: "Bill Moore", group: "Ufology Giants", description: "Involved in MJ-12 document research, controversial." },
-        { id: "Richard Dolan", group: "Ufology Giants", description: "Historian & ufologist, UFO secrecy books." },
-        { id: "Grant Cameron", group: "Ufology Giants", description: "Researches presidential UFO interest." },
-        { id: "Jaime Maussan", group: "Ufology Giants", description: "Mexican journalist, major UFO events." },
-        { id: "Giorgio A. Tsoukalos", group: "Ufology Giants", description: "'Ancient Aliens' figure, ancient astronaut theories." },
+    // Ufology Giants (8)
+    { id: "Stanton Friedman", group: "Ufology Giants", description: "Nuclear physicist & ufologist, Roswell & MJ-12." },
+    { id: "Kevin D. Randle", group: "Ufology Giants", description: "Ufologist, detailed Roswell research." },
+    { id: "Timothy Good", group: "Ufology Giants", description: "Ufologist, published alleged secret docs." },
+    { id: "Bill Moore", group: "Ufology Giants", description: "Involved in MJ-12 document research, controversial." },
+    { id: "Richard Dolan", group: "Ufology Giants", description: "Historian & ufologist, UFO secrecy books." },
+    { id: "Grant Cameron", group: "Ufology Giants", description: "Researches presidential UFO interest." },
+    { id: "Jaime Maussan", group: "Ufology Giants", description: "Mexican journalist, major UFO events." },
+    { id: "Giorgio A. Tsoukalos", group: "Ufology Giants", description: "'Ancient Aliens' figure, ancient astronaut theories." },
 
-        // Disclosure Advocates (3)
+    // Disclosure Advocates (3)
         { id: "Steven Greer", group: "Disclosure", description: "Leads 'Disclosure Project' & 'Sirius' initiative." },
         { id: "Steve Bassett", group: "Disclosure", description: "Political lobbyist for UFO disclosure." },
         { id: "Laurance Rockefeller", group: "Disclosure", description: "Philanthropist behind 'Rockefeller Initiative'." },
@@ -667,66 +667,66 @@ var graph = {
 // Color scale & legend data
 // ------------------------------------------------------------------
 var colorScale = {
-    "Roswell": "#FF4136",
-    "MJ-12": "#0074D9",
-    "Project Blue Book": "#FF851B",
-    "Contactees": "#2ECC40",
-    "Generals": "#85144b",
-    "Brazil": "#39CCCC",
-    "Astronauts": "#B10DC9",
-    "Politicians": "#111111",
-    "Celebrities": "#AAAAAA",
-    "TTSA/AATIP": "#FF00FF",
-    "Ufology Giants": "#FFDC00",
-    "Disclosure": "#3D9970",
-    "Organizations": "#6666FF",
-    "Media/Journalists": "#8B4513",
-    "Contemporary Figures": "#00BCD4",
-    "Locations/Incidents": "#9E9E9E"
+  "Roswell": "#FF4136",
+  "MJ-12": "#0074D9",
+  "Project Blue Book": "#FF851B",
+  "Contactees": "#2ECC40",
+  "Generals": "#85144b",
+  "Brazil": "#39CCCC",
+  "Astronauts": "#B10DC9",
+  "Politicians": "#111111",
+  "Celebrities": "#AAAAAA",
+  "TTSA/AATIP": "#FF00FF",
+  "Ufology Giants": "#FFDC00",
+  "Disclosure": "#3D9970",
+  "Organizations": "#6666FF",
+  "Media/Journalists": "#8B4513",
+  "Contemporary Figures": "#00BCD4",
+  "Locations/Incidents": "#9E9E9E"
 };
 
 var legendData = Object.keys(colorScale).map(groupName => ({
-    group: groupName,
-    color: colorScale[groupName]
+  group: groupName,
+  color: colorScale[groupName]
 }));
 
 // ------------------------------------------------------------------
 // Setup the D3 visualization
 // ------------------------------------------------------------------
 var width = window.innerWidth,
-    height = window.innerHeight;
+  height = window.innerHeight;
 
 var svg = d3.select("body").append("svg");
 
 // Zoom & pan
 var zoom = d3.zoom()
-    .scaleExtent([0.1, 10])
-    .on("zoom", function(event) {
-        svgContent.attr("transform", event.transform);
-    });
+  .scaleExtent([0.1, 10])
+  .on("zoom", function(event) {
+    svgContent.attr("transform", event.transform);
+  });
 svg.call(zoom);
 
 var svgContent = svg.append("g");
 
 // Force simulation
 var simulation = d3.forceSimulation(graph.nodes)
-    .force("link", d3.forceLink(graph.links).id(d => d.id).distance(75))
-    .force("charge", d3.forceManyBody().strength(-120))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("collision", d3.forceCollide().radius(20));
+  .force("link", d3.forceLink(graph.links).id(d => d.id).distance(75))
+  .force("charge", d3.forceManyBody().strength(-120))
+  .force("center", d3.forceCenter(width / 2, height / 2))
+  .force("collision", d3.forceCollide().radius(20));
 
 // ------------------------------------------------------------------
 // Render the links
 // ------------------------------------------------------------------
 var link = svgContent.selectAll("line.link")
-    .data(graph.links)
-    .enter()
-    .append("line")
-    .attr("class", "link");
+  .data(graph.links)
+  .enter()
+  .append("line")
+  .attr("class", "link");
 
 // Link labels
 var linkLabel = svgContent.selectAll("text.link-label")
-    .data(graph.links)
+  .data(graph.links)
     .enter()
     .append("text")
     .attr("class", "link-label")
@@ -737,69 +737,69 @@ var linkLabel = svgContent.selectAll("text.link-label")
 // Render the nodes
 // ------------------------------------------------------------------
 var node = svgContent.selectAll("circle.node")
-    .data(graph.nodes)
-    .enter()
-    .append("circle")
-    .attr("class", "node")
-    .attr("r", 6)
-    .attr("fill", d => colorScale[d.group] || "#999999")
-    .call(d3.drag()
-        .on("start", dragStarted)
-        .on("drag", dragged)
-        .on("end", dragEnded)
-    );
+  .data(graph.nodes)
+  .enter()
+  .append("circle")
+  .attr("class", "node")
+  .attr("r", 6)
+  .attr("fill", d => colorScale[d.group] || "#999999")
+  .call(d3.drag()
+    .on("start", dragStarted)
+    .on("drag", dragged)
+    .on("end", dragEnded)
+  );
 
 // Tooltips via <title>
 node.append("title")
-    .text(d => `${d.id} (${d.group}): ${d.description}`);
+  .text(d => `${d.id} (${d.group}): ${d.description}`);
 
 // Node labels
 var nodeLabel = svgContent.selectAll("text.node-label")
-    .data(graph.nodes)
-    .enter()
-    .append("text")
-    .attr("class", "node-label")
-    .attr("dy", -10)
-    .attr("text-anchor", "middle")
-    .text(d => d.id);
+  .data(graph.nodes)
+  .enter()
+  .append("text")
+  .attr("class", "node-label")
+  .attr("dy", -10)
+  .attr("text-anchor", "middle")
+  .text(d => d.id);
 
 // ------------------------------------------------------------------
 // Simulation tick
 // ------------------------------------------------------------------
 simulation.on("tick", () => {
-    link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
 
-    linkLabel
-        .attr("x", d => (d.source.x + d.target.x) / 2)
-        .attr("y", d => (d.source.y + d.target.y) / 2);
+  linkLabel
+    .attr("x", d => (d.source.x + d.target.x) / 2)
+    .attr("y", d => (d.source.y + d.target.y) / 2);
 
-    node
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y);
+  node
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y);
 
-    nodeLabel
-        .attr("x", d => d.x)
-        .attr("y", d => d.y - 10);
+  nodeLabel
+    .attr("x", d => d.x)
+    .attr("y", d => d.y - 10);
 });
 
 // ------------------------------------------------------------------
 // Drag handlers
 // ------------------------------------------------------------------
 function dragStarted(event, d) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
+  if (!event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
 }
 function dragged(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
+  d.fx = event.x;
+  d.fy = event.y;
 }
 function dragEnded(event, d) {
-    if (!event.active) simulation.alphaTarget(0);
+  if (!event.active) simulation.alphaTarget(0);
     d.fx = null;
     d.fy = null;
 }
@@ -808,25 +808,25 @@ function dragEnded(event, d) {
 // Legend - now TWICE the original size
 // ------------------------------------------------------------------
 var legend = svg.append("g")
-    .attr("class", "legend")
-    .attr("transform", "translate(20,20)");
+  .attr("class", "legend")
+  .attr("transform", "translate(20,20)");
 
 var legendItem = legend.selectAll(".legend-item")
-    .data(legendData)
-    .enter()
-    .append("g")
-    .attr("class", "legend-item")
-    .attr("transform", (d,i) => `translate(0, ${i * 36})`); // was 18, now 36
+  .data(legendData)
+  .enter()
+  .append("g")
+  .attr("class", "legend-item")
+  .attr("transform", (d,i) => `translate(0, ${i * 36})`); // was 18, now 36
 
 legendItem.append("rect")
-    .attr("width", 28)   // was 14
-    .attr("height", 28)  // was 14
-    .attr("fill", d => d.color);
+  .attr("width", 28)   // was 14
+  .attr("height", 28)  // was 14
+  .attr("fill", d => d.color);
 
 legendItem.append("text")
-    .attr("x", 40)       // was 20
-    .attr("y", 20)       // shift down within bigger box
-    .text(d => d.group);
+  .attr("x", 40)       // was 20
+  .attr("y", 20)       // shift down within bigger box
+  .text(d => d.group);
 </script>
 </body>
 </html>
