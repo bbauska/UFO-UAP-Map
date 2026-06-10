@@ -1,7 +1,7 @@
 {
   "name": "UFO/UAP Map",
   "short_name": "UFO Map", 
-  "start_url": "/ufo-uap-map.bauska.org",
+  "start_url": "/uap-map.bauska.org",
   "display": "standalone",
   "icons": [
     {
